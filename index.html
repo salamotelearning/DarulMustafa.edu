@@ -439,33 +439,31 @@
 
     // Initialize Element SDK
     async function initializeApp() {
-  // ১. প্রথমে লগইন স্টেট চেক করুন (এটি সবকিছুর আগে হওয়া উচিত)
-  checkLoginState();
 
-  // ২. এরপর SDK ইননিশিয়াল করুন
+  checkLoginState();   // আগে লগইন চেক
+
   if (window.elementSdk) {
     window.elementSdk.init({
       defaultConfig,
       onConfigChange: async (newConfig) => {
         config = { ...defaultConfig, ...newConfig };
         applyConfig();
-          },
-          mapToCapabilities: () => ({
-            recolorables: [],
-            borderables: [],
-            fontEditable: undefined,
-            fontSizeable: undefined
-          }),
-          mapToEditPanelValues: (cfg) => new Map([
-            ['center_name', cfg.center_name || defaultConfig.center_name],
-            ['developer_name', cfg.developer_name || defaultConfig.developer_name],
-            ['welcome_message', cfg.welcome_message || defaultConfig.welcome_message]
-          ])
-        });
-      }
-      checkLoginState();
-    }
-
+      },
+      mapToCapabilities: () => ({
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      }),
+      mapToEditPanelValues: (cfg) => new Map([
+        ['center_name', cfg.center_name || defaultConfig.center_name],
+        ['developer_name', cfg.developer_name || defaultConfig.developer_name],
+        ['welcome_message', cfg.welcome_message || defaultConfig.welcome_message]
+      ])
+    });
+  }
+  applyConfig(); // এটা এখানে থাকবে
+}
     function applyConfig() {
       document.getElementById('header-title').textContent = config.center_name || defaultConfig.center_name;
       document.getElementById('nav-title').textContent = config.center_name || defaultConfig.center_name;
@@ -1029,8 +1027,9 @@ function logout() {
   location.reload();
 }
 
-    applyConfig();
-    initializeApp();
+    document.addEventListener("DOMContentLoaded", function () {
+  initializeApp();
+});
   </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cdb78e9a32a5807',t:'MTc3MTA2MDY0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
