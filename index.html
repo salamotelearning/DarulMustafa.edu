@@ -439,12 +439,16 @@
 
     // Initialize Element SDK
     async function initializeApp() {
-      if (window.elementSdk) {
-        window.elementSdk.init({
-          defaultConfig,
-          onConfigChange: async (newConfig) => {
-            config = { ...defaultConfig, ...newConfig };
-            applyConfig();
+  // ১. প্রথমে লগইন স্টেট চেক করুন (এটি সবকিছুর আগে হওয়া উচিত)
+  checkLoginState();
+
+  // ২. এরপর SDK ইননিশিয়াল করুন
+  if (window.elementSdk) {
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (newConfig) => {
+        config = { ...defaultConfig, ...newConfig };
+        applyConfig();
           },
           mapToCapabilities: () => ({
             recolorables: [],
