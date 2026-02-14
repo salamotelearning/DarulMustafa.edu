@@ -498,15 +498,18 @@
       }
     }
 
-    function checkLoginState() {
-      const user = localStorage.getItem('eduCenter_user');
-      if (user) {
-        document.getElementById('user-email').textContent = user;
-        loadDashboard();
-      } else {
-        showLanding();
-      }
-    }
+    // আপনার কোডের ৪৪৭ নম্বর লাইনের ফাংশনটি এভাবে পরিবর্তন করুন:
+function checkLoginState() {
+  const user = localStorage.getItem('eduCenter_user');
+  const isLoggedIn = localStorage.getItem('isLoggedIn'); // নতুন চেক
+
+  if (user && isLoggedIn === 'true') {
+    document.getElementById('user-email').textContent = user;
+    loadDashboard();
+  } else {
+    showLanding();
+  }
+}
 
     document.getElementById('login-form').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -520,9 +523,12 @@
         return;
       }
 
-      localStorage.setItem('eduCenter_user', email);
-      document.getElementById('user-email').textContent = email;
-      errorDiv.classList.add('hidden');
+        // এখানে পরিবর্তন:
+  localStorage.setItem('eduCenter_user', email);
+  localStorage.setItem('isLoggedIn', 'true'); // রিফ্রেশ সমস্যা সমাধানের জন্য এই লাইনটি যোগ করুন
+  
+  document.getElementById('user-email').textContent = email;
+  errorDiv.classList.add('hidden');
       showDashboard();
     });
 
@@ -1003,10 +1009,13 @@
       });
     }
 
-    function logout() {
-      localStorage.removeItem('eduCenter_user');
-      location.reload();
-    }
+    // আপনার কোডের ৮১৮ নম্বর লাইন:
+function logout() {
+  localStorage.removeItem('eduCenter_user');
+  localStorage.removeItem('isLoggedIn'); // এটি যোগ করুন
+  localStorage.removeItem(localStorageKey); // ডাটা ক্লিয়ার করার জন্য (ঐচ্ছিক)
+  location.reload();
+}
 
     applyConfig();
     initializeApp();
