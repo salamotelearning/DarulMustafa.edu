@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Education Center Management System</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Poppins', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #1e3a5f 100%); }
+    .card-shadow { box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+    .sidebar-enter { animation: slideIn 0.3s ease-out; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.4s ease-out; }
+    @media print { .no-print { display: none !important; } .print-only { display: block !important; } }
+    .print-only { display: none; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full bg-slate-50">
+  <div id="app" class="h-full overflow-auto flex flex-col"><!-- Landing Page -->
+   <div id="landing-page" class="min-h-full">
+    <div class="gradient-bg min-h-full flex flex-col">
+     <header class="p-6">
+      <div class="flex items-center gap-3">
+       <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center"><span class="text-2xl">📚</span>
+       </div>
+       <h1 id="header-title" class="text-2xl font-bold text-white">Education Center</h1>
+      </div>
+     </header>
+     <main class="flex-1 flex items-center justify-center p-6">
+      <div class="text-center max-w-2xl fade-in">
+       <div class="mb-8">
+        <div class="w-24 h-24 mx-auto bg-white/10 rounded-full flex items-center justify-center mb-6 backdrop-blur-sm"><span class="text-5xl">🎓</span>
+        </div>
+        <h2 id="welcome-title" class="text-4xl md:text-5xl font-bold text-white mb-4">Welcome to Excellence</h2>
+        <p class="text-xl text-blue-100 mb-8">Empowering Education, Managing Success</p>
+       </div><button onclick="showLogin()" class="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-900 font-semibold rounded-xl transition-all transform hover:scale-105 shadow-lg">🚀 Visit System</button>
+      </div>
+     </main>
+     <footer class="p-6 text-center border-t border-white/10">
+      <p class="text-blue-100 text-sm">Developed by <span id="dev-name" class="font-semibold text-amber-400">Your Name</span> • Designed by <span id="design-name" class="font-semibold text-amber-400">Your Name</span></p>
+      <p class="text-blue-200/60 text-xs mt-1">© 2024 All Rights Reserved</p>
+     </footer>
+    </div>
+   </div><!-- Login Page -->
+   <div id="login-page" class="hidden min-h-full gradient-bg flex items-center justify-center p-6">
+    <div class="w-full max-w-md">
+     <div class="bg-white rounded-2xl card-shadow p-8 fade-in">
+      <div class="text-center mb-8">
+       <div class="w-16 h-16 mx-auto bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center mb-4"><span class="text-3xl">🔐</span>
+       </div>
+       <h2 class="text-2xl font-bold text-slate-800">Admin Login</h2>
+       <p class="text-slate-500 mt-1">Sign in to access dashboard</p>
+      </div>
+      <form id="login-form" class="space-y-5">
+       <div><label for="email" class="block text-sm font-medium text-slate-700 mb-2">Email Address</label> <input type="email" id="email" required placeholder="admin@education.com" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+       </div>
+       <div><label for="password" class="block text-sm font-medium text-slate-700 mb-2">Password</label> <input type="password" id="password" required placeholder="••••••••" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+       </div>
+       <div id="login-error" class="hidden text-red-500 text-sm text-center p-3 bg-red-50 rounded-lg"></div><button type="submit" id="login-btn" class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl transition-all shadow-lg">Sign In</button>
+      </form>
+      <div class="mt-6 text-center"><button onclick="showLanding()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">← Back to Home</button>
+      </div>
+      <p class="mt-4 text-xs text-slate-400 text-center">Demo: any email &amp; password (min 4 chars)</p>
+     </div>
+    </div>
+   </div><!-- Dashboard Page -->
+   <div id="dashboard-page" class="hidden min-h-full flex flex-col"><!-- Navbar -->
+    <nav class="bg-white shadow-sm border-b border-slate-200 no-print sticky top-0 z-40">
+     <div class="px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+       <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center"><span class="text-lg">📚</span>
+       </div><span id="nav-title" class="text-lg font-semibold text-slate-800 hidden sm:block">Education Center</span>
+      </div>
+      <div class="flex items-center gap-3"><span class="text-sm text-slate-600 hidden md:block" id="user-email"></span> <button onclick="toggleSidebar()" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+        <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+        </svg></button>
+      </div>
+     </div>
+    </nav><!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/50 z-40 no-print" onclick="toggleSidebar()"></div><!-- Sidebar Menu -->
+    <aside id="sidebar" class="hidden fixed right-0 top-0 h-full w-72 bg-white shadow-2xl z-50 sidebar-enter no-print overflow-y-auto">
+     <div class="p-4 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white">
+      <h3 class="font-semibold text-slate-800">Menu</h3><button onclick="toggleSidebar()" class="p-1 hover:bg-slate-100 rounded-lg">
+       <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+       </svg></button>
+     </div>
+     <nav class="p-3 space-y-1"><button onclick="showSection('dashboard')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition-colors text-left"> <span class="text-xl">📊</span> <span class="font-medium">Dashboard</span> </button> <button onclick="showSection('students')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition-colors text-left"> <span class="text-xl">👨‍🎓</span> <span class="font-medium">Students</span> </button> <button onclick="showSection('income-form')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition-colors text-left"> <span class="text-xl">💰</span> <span class="font-medium">Income Entry</span> </button> <button onclick="showSection('expense-form')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition-colors text-left"> <span class="text-xl">💸</span> <span class="font-medium">Expense Entry</span> </button> <button onclick="showSection('income-report')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition-colors text-left"> <span class="text-xl">📈</span> <span class="font-medium">Income Report</span> </button> <button onclick="showSection('expense-report')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition-colors text-left"> <span class="text-xl">📉</span> <span class="font-medium">Expense Report</span> </button> <button onclick="showSection('income-voucher')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition-colors text-left"> <span class="text-xl">🧾</span> <span class="font-medium">Income Voucher</span> </button> <button onclick="showSection('expense-voucher')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition-colors text-left"> <span class="text-xl">📝</span> <span class="font-medium">Expense Voucher</span> </button>
+      <div class="border-t border-slate-200 my-3"></div><button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 text-red-600 transition-colors text-left"> <span class="text-xl">🚪</span> <span class="font-medium">Logout</span> </button>
+     </nav>
+    </aside><!-- Main Content -->
+    <main class="flex-1 p-4 md:p-6 overflow-auto"><!-- Dashboard Section -->
+     <section id="section-dashboard" class="content-section fade-in">
+      <h2 class="text-2xl font-bold text-slate-800 mb-6">📊 Dashboard Overview</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+       <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-5 text-white card-shadow">
+        <div class="flex items-center justify-between">
+         <div>
+          <p class="text-blue-100 text-sm">Total Students</p>
+          <p id="stat-students" class="text-3xl font-bold mt-1">0</p>
+         </div>
+         <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center"><span class="text-2xl">👨‍🎓</span>
+         </div>
+        </div>
+       </div>
+       <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-5 text-white card-shadow">
+        <div class="flex items-center justify-between">
+         <div>
+          <p class="text-emerald-100 text-sm">Total Income</p>
+          <p id="stat-income" class="text-3xl font-bold mt-1">$0</p>
+         </div>
+         <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center"><span class="text-2xl">💰</span>
+         </div>
+        </div>
+       </div>
+       <div class="bg-gradient-to-br from-rose-500 to-rose-600 rounded-2xl p-5 text-white card-shadow">
+        <div class="flex items-center justify-between">
+         <div>
+          <p class="text-rose-100 text-sm">Total Expenses</p>
+          <p id="stat-expenses" class="text-3xl font-bold mt-1">$0</p>
+         </div>
+         <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center"><span class="text-2xl">💸</span>
+         </div>
+        </div>
+       </div>
+       <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl p-5 text-white card-shadow">
+        <div class="flex items-center justify-between">
+         <div>
+          <p class="text-amber-100 text-sm">Net Balance</p>
+          <p id="stat-balance" class="text-3xl font-bold mt-1">$0</p>
+         </div>
+         <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center"><span class="text-2xl">📊</span>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+       <div class="bg-white rounded-2xl p-6 card-shadow">
+        <h3 class="text-lg font-semibold text-slate-800 mb-4">📋 Recent Transactions</h3>
+        <div id="recent-transactions" class="space-y-3">
+         <p class="text-slate-500 text-center py-4">No transactions yet</p>
+        </div>
+       </div>
+       <div class="bg-white rounded-2xl p-6 card-shadow">
+        <h3 class="text-lg font-semibold text-slate-800 mb-4">⚡ Quick Actions</h3>
+        <div class="grid grid-cols-2 gap-3"><button onclick="showSection('students')" class="p-4 bg-blue-50 hover:bg-blue-100 rounded-xl text-blue-700 font-medium transition-colors">+ Add Student</button> <button onclick="showSection('income-form')" class="p-4 bg-emerald-50 hover:bg-emerald-100 rounded-xl text-emerald-700 font-medium transition-colors">+ Add Income</button> <button onclick="showSection('expense-form')" class="p-4 bg-rose-50 hover:bg-rose-100 rounded-xl text-rose-700 font-medium transition-colors">+ Add Expense</button> <button onclick="showSection('income-report')" class="p-4 bg-amber-50 hover:bg-amber-100 rounded-xl text-amber-700 font-medium transition-colors">View Reports</button>
+        </div>
+       </div>
+      </div>
+     </section><!-- Students Section -->
+     <section id="section-students" class="content-section hidden fade-in">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+       <h2 class="text-2xl font-bold text-slate-800">👨‍🎓 Students Information</h2><button onclick="showStudentForm()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">+ Add Student</button>
+      </div>
+      <div class="bg-white rounded-2xl p-6 card-shadow mb-6">
+       <div class="flex flex-col md:flex-row gap-4 mb-4"><input type="text" id="student-search" placeholder="🔍 Search by ID, Name, or Class..." class="flex-1 px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" oninput="filterStudents()"> <select id="class-filter" onchange="filterStudents()" class="px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"> <option value="">All Classes</option> <option value="Class 1">Class 1</option> <option value="Class 2">Class 2</option> <option value="Class 3">Class 3</option> <option value="Class 4">Class 4</option> <option value="Class 5">Class 5</option> </select>
+       </div>
+       <div class="overflow-x-auto">
+        <table class="w-full">
+         <thead>
+          <tr class="border-b border-slate-200">
+           <th class="text-left py-3 px-4 text-slate-600 font-semibold">ID</th>
+           <th class="text-left py-3 px-4 text-slate-600 font-semibold">Name</th>
+           <th class="text-left py-3 px-4 text-slate-600 font-semibold">Class</th>
+           <th class="text-left py-3 px-4 text-slate-600 font-semibold">Phone</th>
+           <th class="text-left py-3 px-4 text-slate-600 font-semibold">Email</th>
+          </tr>
+         </thead>
+         <tbody id="students-table">
+          <tr>
+           <td colspan="5" class="text-center py-8 text-slate-500">No students found</td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div><!-- Add Student Form -->
+      <div id="student-form" class="hidden bg-white rounded-2xl p-6 card-shadow">
+       <h3 class="text-lg font-semibold text-slate-800 mb-4">Add New Student</h3>
+       <form id="add-student-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label for="new-student-id" class="block text-sm font-medium text-slate-700 mb-2">Student ID</label> <input type="text" id="new-student-id" required placeholder="STU001" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div><label for="new-student-name" class="block text-sm font-medium text-slate-700 mb-2">Full Name</label> <input type="text" id="new-student-name" required placeholder="John Doe" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div><label for="new-student-class" class="block text-sm font-medium text-slate-700 mb-2">Class</label> <select id="new-student-class" required class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"> <option value="">Select Class</option> <option value="Class 1">Class 1</option> <option value="Class 2">Class 2</option> <option value="Class 3">Class 3</option> <option value="Class 4">Class 4</option> <option value="Class 5">Class 5</option> </select>
+        </div>
+        <div><label for="new-student-phone" class="block text-sm font-medium text-slate-700 mb-2">Phone</label> <input type="tel" id="new-student-phone" placeholder="+1234567890" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div class="md:col-span-2"><label for="new-student-email" class="block text-sm font-medium text-slate-700 mb-2">Email</label> <input type="email" id="new-student-email" placeholder="student@email.com" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div class="md:col-span-2 flex gap-3"><button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">Save Student</button> <button type="button" onclick="hideStudentForm()" class="px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-medium transition-colors">Cancel</button>
+        </div>
+       </form>
+      </div>
+     </section><!-- Income Entry Form -->
+     <section id="section-income-form" class="content-section hidden fade-in">
+      <h2 class="text-2xl font-bold text-slate-800 mb-6">💰 Income Entry Form</h2>
+      <div class="bg-white rounded-2xl p-6 card-shadow max-w-2xl">
+       <form id="income-entry-form" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+         <div><label for="income-date" class="block text-sm font-medium text-slate-700 mb-2">Date</label> <input type="date" id="income-date" required class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+         </div>
+         <div><label for="income-amount" class="block text-sm font-medium text-slate-700 mb-2">Amount ($)</label> <input type="number" id="income-amount" required min="0" step="0.01" placeholder="0.00" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+         </div>
+        </div>
+        <div><label for="income-category" class="block text-sm font-medium text-slate-700 mb-2">Category</label> <select id="income-category" required class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"> <option value="">Select Category</option> <option value="Tuition Fee">Tuition Fee</option> <option value="Registration Fee">Registration Fee</option> <option value="Exam Fee">Exam Fee</option> <option value="Library Fee">Library Fee</option> <option value="Other">Other</option> </select>
+        </div>
+        <div><label for="income-student-id" class="block text-sm font-medium text-slate-700 mb-2">Student ID (Optional)</label> <input type="text" id="income-student-id" placeholder="STU001" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+        </div>
+        <div><label for="income-description" class="block text-sm font-medium text-slate-700 mb-2">Description</label> <textarea id="income-description" rows="3" placeholder="Additional details..." class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none resize-none"></textarea>
+        </div>
+        <div id="income-form-message" class="hidden p-3 rounded-lg text-sm"></div><button type="submit" id="income-submit-btn" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all">💰 Submit Income</button>
+       </form>
+      </div>
+     </section><!-- Expense Entry Form -->
+     <section id="section-expense-form" class="content-section hidden fade-in">
+      <h2 class="text-2xl font-bold text-slate-800 mb-6">💸 Expense Entry Form</h2>
+      <div class="bg-white rounded-2xl p-6 card-shadow max-w-2xl">
+       <form id="expense-entry-form" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+         <div><label for="expense-date" class="block text-sm font-medium text-slate-700 mb-2">Date</label> <input type="date" id="expense-date" required class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500 outline-none">
+         </div>
+         <div><label for="expense-amount" class="block text-sm font-medium text-slate-700 mb-2">Amount ($)</label> <input type="number" id="expense-amount" required min="0" step="0.01" placeholder="0.00" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500 outline-none">
+         </div>
+        </div>
+        <div><label for="expense-category" class="block text-sm font-medium text-slate-700 mb-2">Category</label> <select id="expense-category" required class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500 outline-none"> <option value="">Select Category</option> <option value="Salary">Salary</option> <option value="Utilities">Utilities</option> <option value="Supplies">Supplies</option> <option value="Maintenance">Maintenance</option> <option value="Equipment">Equipment</option> <option value="Other">Other</option> </select>
+        </div>
+        <div><label for="expense-description" class="block text-sm font-medium text-slate-700 mb-2">Description</label> <textarea id="expense-description" rows="3" placeholder="Additional details..." class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-500 outline-none resize-none"></textarea>
+        </div>
+        <div id="expense-form-message" class="hidden p-3 rounded-lg text-sm"></div><button type="submit" id="expense-submit-btn" class="w-full py-3 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-semibold rounded-xl transition-all">💸 Submit Expense</button>
+       </form>
+      </div>
+     </section><!-- Income Report -->
+     <section id="section-income-report" class="content-section hidden fade-in">
+      <h2 class="text-2xl font-bold text-slate-800 mb-6">📈 Income Report</h2>
+      <div class="bg-white rounded-2xl p-6 card-shadow">
+       <div class="flex flex-col md:flex-row gap-4 mb-6">
+        <div><label for="income-report-start" class="block text-sm font-medium text-slate-700 mb-2">Start Date</label> <input type="date" id="income-report-start" class="px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div><label for="income-report-end" class="block text-sm font-medium text-slate-700 mb-2">End Date</label> <input type="date" id="income-report-end" class="px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div class="flex items-end"><button onclick="generateIncomeReport()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">Generate Report</button>
+        </div>
+       </div>
+       <div id="income-report-total" class="mb-4 p-4 bg-emerald-50 rounded-xl hidden"><span class="text-emerald-800 font-semibold">Total Income: </span> <span id="income-total-value" class="text-2xl font-bold text-emerald-600">$0</span>
+       </div>
+       <div class="overflow-x-auto">
+        <table class="w-full">
+         <thead>
+          <tr class="border-b border-slate-200">
+           <th class="text-left py-3 px-4 text-slate-600 font-semibold">Date</th>
+           <th class="text-left py-3 px-4 text-slate-600 font-semibold">Category</th>
+           <th class="text-left py-3 px-4 text-slate-600 font-semibold">Description</th>
+           <th class="text-right py-3 px-4 text-slate-600 font-semibold">Amount</th>
+          </tr>
+         </thead>
+         <tbody id="income-report-table">
+          <tr>
+           <td colspan="4" class="text-center py-8 text-slate-500">Select date range to generate report</td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </section><!-- Expense Report -->
+     <section id="section-expense-report" class="content-section hidden fade-in">
+      <h2 class="text-2xl font-bold text-slate-800 mb-6">📉 Expense Report</h2>
+      <div class="bg-white rounded-2xl p-6 card-shadow">
+       <div class="flex flex-col md:flex-row gap-4 mb-6">
+        <div><label for="expense-report-start" class="block text-sm font-medium text-slate-700 mb-2">Start Date</label> <input type="date" id="expense-report-start" class="px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div><label for="expense-report-end" class="block text-sm font-medium text-slate-700 mb-2">End Date</label> <input type="date" id="expense-report-end" class="px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div class="flex items-end"><button onclick="generateExpenseReport()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">Generate Report</button>
+        </div>
+       </div>
+       <div id="expense-report-total" class="mb-4 p-4 bg-rose-50 rounded-xl hidden"><span class="text-rose-800 font-semibold">Total Expenses: </span> <span id="expense-total-value" class="text-2xl font-bold text-rose-600">$0</span>
+       </div>
+       <div class="overflow-x-auto">
+        <table class="w-full">
+         <thead>
+          <tr class="border-b border-slate-200">
+           <th class="text-left py-3 px-4 text-slate-600 font-semibold">Date</th>
+           <th class="text-left py-3 px-4 text-slate-600 font-semibold">Category</th>
+           <th class="text-left py-3 px-4 text-slate-600 font-semibold">Description</th>
+           <th class="text-right py-3 px-4 text-slate-600 font-semibold">Amount</th>
+          </tr>
+         </thead>
+         <tbody id="expense-report-table">
+          <tr>
+           <td colspan="4" class="text-center py-8 text-slate-500">Select date range to generate report</td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </section><!-- Income Voucher -->
+     <section id="section-income-voucher" class="content-section hidden fade-in">
+      <div class="flex items-center justify-between mb-6 no-print flex-wrap gap-4">
+       <h2 class="text-2xl font-bold text-slate-800">🧾 Daily Income Voucher</h2>
+       <div class="flex gap-3 flex-wrap"><input type="date" id="income-voucher-date" class="px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"> <button onclick="generateIncomeVoucher()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">Generate</button> <button onclick="window.print()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-medium transition-colors">🖨️ Print</button>
+       </div>
+      </div>
+      <div id="income-voucher-content" class="bg-white rounded-2xl p-8 card-shadow max-w-3xl mx-auto">
+       <div class="text-center border-b-2 border-slate-200 pb-4 mb-6">
+        <h1 id="voucher-center-name" class="text-2xl font-bold text-slate-800">Education Center</h1>
+        <p class="text-slate-500">Daily Income Voucher</p>
+       </div>
+       <div class="flex justify-between mb-6">
+        <div>
+         <p class="text-slate-600">Date: <span id="voucher-income-date" class="font-semibold">-</span></p>
+        </div>
+        <div>
+         <p class="text-slate-600">Voucher No: <span id="voucher-income-no" class="font-semibold">-</span></p>
+        </div>
+       </div>
+       <table class="w-full mb-6">
+        <thead>
+         <tr class="border-b-2 border-slate-300">
+          <th class="text-left py-2 text-slate-700">#</th>
+          <th class="text-left py-2 text-slate-700">Category</th>
+          <th class="text-left py-2 text-slate-700">Description</th>
+          <th class="text-right py-2 text-slate-700">Amount</th>
+         </tr>
+        </thead>
+        <tbody id="income-voucher-table">
+         <tr>
+          <td colspan="4" class="text-center py-4 text-slate-500">Select a date to generate voucher</td>
+         </tr>
+        </tbody>
+        <tfoot>
+         <tr class="border-t-2 border-slate-300">
+          <td colspan="3" class="py-3 font-bold text-slate-800">Total</td>
+          <td id="income-voucher-total" class="text-right py-3 font-bold text-emerald-600">$0.00</td>
+         </tr>
+        </tfoot>
+       </table>
+       <div class="flex justify-between mt-12 pt-8">
+        <div class="text-center">
+         <div class="border-t border-slate-400 w-32 mb-2"></div>
+         <p class="text-slate-600 text-sm">Prepared By</p>
+        </div>
+        <div class="text-center">
+         <div class="border-t border-slate-400 w-32 mb-2"></div>
+         <p class="text-slate-600 text-sm">Approved By</p>
+        </div>
+       </div>
+      </div>
+     </section><!-- Expense Voucher -->
+     <section id="section-expense-voucher" class="content-section hidden fade-in">
+      <div class="flex items-center justify-between mb-6 no-print flex-wrap gap-4">
+       <h2 class="text-2xl font-bold text-slate-800">📝 Daily Expense Voucher</h2>
+       <div class="flex gap-3 flex-wrap"><input type="date" id="expense-voucher-date" class="px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"> <button onclick="generateExpenseVoucher()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">Generate</button> <button onclick="window.print()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-medium transition-colors">🖨️ Print</button>
+       </div>
+      </div>
+      <div id="expense-voucher-content" class="bg-white rounded-2xl p-8 card-shadow max-w-3xl mx-auto">
+       <div class="text-center border-b-2 border-slate-200 pb-4 mb-6">
+        <h1 id="voucher-center-name-exp" class="text-2xl font-bold text-slate-800">Education Center</h1>
+        <p class="text-slate-500">Daily Expense Voucher</p>
+       </div>
+       <div class="flex justify-between mb-6">
+        <div>
+         <p class="text-slate-600">Date: <span id="voucher-expense-date" class="font-semibold">-</span></p>
+        </div>
+        <div>
+         <p class="text-slate-600">Voucher No: <span id="voucher-expense-no" class="font-semibold">-</span></p>
+        </div>
+       </div>
+       <table class="w-full mb-6">
+        <thead>
+         <tr class="border-b-2 border-slate-300">
+          <th class="text-left py-2 text-slate-700">#</th>
+          <th class="text-left py-2 text-slate-700">Category</th>
+          <th class="text-left py-2 text-slate-700">Description</th>
+          <th class="text-right py-2 text-slate-700">Amount</th>
+         </tr>
+        </thead>
+        <tbody id="expense-voucher-table">
+         <tr>
+          <td colspan="4" class="text-center py-4 text-slate-500">Select a date to generate voucher</td>
+         </tr>
+        </tbody>
+        <tfoot>
+         <tr class="border-t-2 border-slate-300">
+          <td colspan="3" class="py-3 font-bold text-slate-800">Total</td>
+          <td id="expense-voucher-total" class="text-right py-3 font-bold text-rose-600">$0.00</td>
+         </tr>
+        </tfoot>
+       </table>
+       <div class="flex justify-between mt-12 pt-8">
+        <div class="text-center">
+         <div class="border-t border-slate-400 w-32 mb-2"></div>
+         <p class="text-slate-600 text-sm">Prepared By</p>
+        </div>
+        <div class="text-center">
+         <div class="border-t border-slate-400 w-32 mb-2"></div>
+         <p class="text-slate-600 text-sm">Approved By</p>
+        </div>
+       </div>
+      </div>
+     </section>
+    </main>
+   </div>
+  </div>
+  <script>
+    const SCRIPT_URL = "Https://script.google.com/macros/s/AKfycbyPf9pb9SuOvnVLbFqI3vzt9WuViqHLtDJTKsauQ-ldQbTb4-z_QpMU9p4i-2EM8_1K2g/exec";
+    
+    const defaultConfig = {
+      center_name: 'Education Center',
+      developer_name: 'Your Name',
+      welcome_message: 'Welcome to Excellence'
+    };
+
+    let config = { ...defaultConfig };
+    let allData = { students: [], income: [], expense: [] };
+    let localStorageKey = 'edu_center_data';
+
+    // Initialize Element SDK
+    async function initializeApp() {
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (newConfig) => {
+            config = { ...defaultConfig, ...newConfig };
+            applyConfig();
+          },
+          mapToCapabilities: () => ({
+            recolorables: [],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          }),
+          mapToEditPanelValues: (cfg) => new Map([
+            ['center_name', cfg.center_name || defaultConfig.center_name],
+            ['developer_name', cfg.developer_name || defaultConfig.developer_name],
+            ['welcome_message', cfg.welcome_message || defaultConfig.welcome_message]
+          ])
+        });
+      }
+      checkLoginState();
+    }
+
+    function applyConfig() {
+      document.getElementById('header-title').textContent = config.center_name || defaultConfig.center_name;
+      document.getElementById('nav-title').textContent = config.center_name || defaultConfig.center_name;
+      document.getElementById('welcome-title').textContent = config.welcome_message || defaultConfig.welcome_message;
+      document.getElementById('dev-name').textContent = config.developer_name || defaultConfig.developer_name;
+      document.getElementById('design-name').textContent = config.developer_name || defaultConfig.developer_name;
+      document.getElementById('voucher-center-name').textContent = config.center_name || defaultConfig.center_name;
+      document.getElementById('voucher-center-name-exp').textContent = config.center_name || defaultConfig.center_name;
+    }
+
+    function showLogin() {
+      document.getElementById('landing-page').classList.add('hidden');
+      document.getElementById('login-page').classList.remove('hidden');
+    }
+
+    function showLanding() {
+      document.getElementById('login-page').classList.add('hidden');
+      document.getElementById('landing-page').classList.remove('hidden');
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      sidebar.classList.toggle('hidden');
+      overlay.classList.toggle('hidden');
+    }
+
+    function showSection(name) {
+      document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden'));
+      document.getElementById('section-' + name).classList.remove('hidden');
+      
+      if (window.innerWidth < 768) {
+        toggleSidebar();
+      }
+    }
+
+    function checkLoginState() {
+      const user = localStorage.getItem('eduCenter_user');
+      if (user) {
+        document.getElementById('user-email').textContent = user;
+        loadDashboard();
+      } else {
+        showLanding();
+      }
+    }
+
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('login-error');
+
+      if (password.length < 4) {
+        errorDiv.textContent = 'Password must be at least 4 characters';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      localStorage.setItem('eduCenter_user', email);
+      document.getElementById('user-email').textContent = email;
+      errorDiv.classList.add('hidden');
+      showDashboard();
+    });
+
+    async function loadDashboard() {
+      document.getElementById('landing-page').classList.add('hidden');
+      document.getElementById('login-page').classList.add('hidden');
+      document.getElementById('dashboard-page').classList.remove('hidden');
+
+      try {
+        const res = await fetch(SCRIPT_URL);
+        if (res.ok) {
+          allData = await res.json();
+          localStorage.setItem(localStorageKey, JSON.stringify(allData));
+        } else {
+          loadFromLocalStorage();
+        }
+      } catch (err) {
+        console.warn('Using local storage');
+        loadFromLocalStorage();
+      }
+
+      updateStats();
+      renderStudents();
+      updateRecentTransactions();
+      setDefaultDates();
+      showSection('dashboard');
+    }
+
+    function showDashboard() {
+      document.getElementById('landing-page').classList.add('hidden');
+      document.getElementById('login-page').classList.add('hidden');
+      document.getElementById('dashboard-page').classList.remove('hidden');
+      showSection('dashboard');
+    }
+
+    function loadFromLocalStorage() {
+      const saved = localStorage.getItem(localStorageKey);
+      if (saved) {
+        allData = JSON.parse(saved);
+      } else {
+        allData = { students: [], income: [], expense: [] };
+      }
+    }
+
+    function saveToLocalStorage() {
+      localStorage.setItem(localStorageKey, JSON.stringify(allData));
+    }
+
+    function updateStats() {
+      const totalStudents = (allData.students || []).length;
+      const totalInc = (allData.income || []).reduce((sum, i) => sum + (parseFloat(i.amount) || 0), 0);
+      const totalExp = (allData.expense || []).reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+
+      document.getElementById('stat-students').textContent = totalStudents;
+      document.getElementById('stat-income').textContent = '$' + totalInc.toFixed(2);
+      document.getElementById('stat-expenses').textContent = '$' + totalExp.toFixed(2);
+      document.getElementById('stat-balance').textContent = '$' + (totalInc - totalExp).toFixed(2);
+    }
+
+    function updateRecentTransactions() {
+      const transactions = (allData.income || [])
+        .map(i => ({ ...i, type: 'income' }))
+        .concat((allData.expense || []).map(e => ({ ...e, type: 'expense' })))
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 5);
+
+      const container = document.getElementById('recent-transactions');
+      
+      if (transactions.length === 0) {
+        container.innerHTML = '<p class="text-slate-500 text-center py-4">No transactions yet</p>';
+        return;
+      }
+
+      container.innerHTML = transactions.map(t => `
+        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+          <div class="flex items-center gap-3">
+            <span class="text-xl">${t.type === 'income' ? '💰' : '💸'}</span>
+            <div>
+              <p class="font-medium text-slate-800">${t.category}</p>
+              <p class="text-sm text-slate-500">${t.date}</p>
+            </div>
+          </div>
+          <span class="font-semibold ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">
+            ${t.type === 'income' ? '+' : '-'}$${parseFloat(t.amount).toFixed(2)}
+          </span>
+        </div>
+      `).join('');
+    }
+
+    function showStudentForm() {
+      document.getElementById('student-form').classList.remove('hidden');
+    }
+
+    function hideStudentForm() {
+      document.getElementById('student-form').classList.add('hidden');
+      document.getElementById('add-student-form').reset();
+    }
+
+    function renderStudents() {
+      const students = allData.students || [];
+      const searchTerm = (document.getElementById('student-search').value || '').toLowerCase();
+      const classFilter = document.getElementById('class-filter').value;
+
+      let filtered = students.filter(s => {
+        const matchesSearch = !searchTerm || 
+          (s.studentId || '').toLowerCase().includes(searchTerm) ||
+          (s.studentName || '').toLowerCase().includes(searchTerm) ||
+          (s.studentClass || '').toLowerCase().includes(searchTerm);
+        const matchesClass = !classFilter || s.studentClass === classFilter;
+        return matchesSearch && matchesClass;
+      });
+
+      const tbody = document.getElementById('students-table');
+      
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-slate-500">No students found</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(s => `
+        <tr class="border-b border-slate-100 hover:bg-slate-50">
+          <td class="py-3 px-4 font-medium text-blue-600">${s.studentId || '-'}</td>
+          <td class="py-3 px-4">${s.studentName || '-'}</td>
+          <td class="py-3 px-4"><span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm">${s.studentClass || '-'}</span></td>
+          <td class="py-3 px-4">${s.studentPhone || '-'}</td>
+          <td class="py-3 px-4">${s.studentEmail || '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function filterStudents() {
+      renderStudents();
+    }
+
+    function showMessage(elementId, msg, type) {
+      const el = document.getElementById(elementId);
+      el.textContent = msg;
+      el.className = `p-3 rounded-lg text-sm ${type === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`;
+      el.classList.remove('hidden');
+      setTimeout(() => el.classList.add('hidden'), 3000);
+    }
+
+    document.getElementById('add-student-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  // বাটনে 'Saving...' লেখা দেখানোর জন্য
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  const originalBtnText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Saving to Database...';
+
+  const studentData = {
+    studentId: document.getElementById('new-student-id').value,
+    studentName: document.getElementById('new-student-name').value,
+    studentClass: document.getElementById('new-student-class').value,
+    studentPhone: document.getElementById('new-student-phone').value,
+    studentEmail: document.getElementById('new-student-email').value,
+    date: new Date().toLocaleDateString()
+  };
+
+  try {
+    // ১. Google Sheet-এ ডেটা পাঠানো
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'addData',
+        type: 'students', // আপনার Apps Script এই নামেই শিট খুঁজবে
+        data: studentData
+      })
+    });
+
+    // ২. লোকাল মেমোরিতেও সেভ রাখা (তাত্ক্ষণিক দেখানোর জন্য)
+    if (!allData.students) allData.students = [];
+    allData.students.push(studentData);
+    saveToLocalStorage();
+    
+    // ৩. UI আপডেট করা
+    renderStudents();
+    updateStats();
+    hideStudentForm();
+    showMessage('income-form-message', 'Student added successfully!', 'success');
+    
+  } catch (error) {
+    console.error('Error:', error);
+    showMessage('income-form-message', 'Failed to save!', 'error');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalBtnText;
+  }
+});
+
+    document.getElementById('income-entry-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  // বাটনটি সিলেক্ট করা (লোডিং দেখানোর জন্য)
+  const submitBtn = document.getElementById('income-submit-btn');
+  const originalBtnText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting to Sheet...';
+
+  const incomeData = {
+    date: document.getElementById('income-date').value,
+    amount: parseFloat(document.getElementById('income-amount').value),
+    category: document.getElementById('income-category').value,
+    studentId: document.getElementById('income-student-id').value,
+    description: document.getElementById('income-description').value,
+    voucherNo: 'INC-' + Date.now()
+  };
+
+  try {
+    // ১. Google Sheet-এ ডেটা পাঠানো (Fetch API)
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'addData',
+        type: 'income', // আপনার Apps Script এই নামে শিট খুঁজবে
+        data: incomeData
+      })
+    });
+
+    // ২. লোকাল ডেটা আপডেট করা (তাত্ক্ষণিক আউটপুট দেখার জন্য)
+    if (!allData.income) allData.income = [];
+    allData.income.push(incomeData);
+    saveToLocalStorage();
+    
+    // ৩. UI রিফ্রেশ করা
+    updateStats();
+    updateRecentTransactions();
+    e.target.reset();
+    setDefaultDates();
+    showMessage('income-form-message', 'Income recorded and synced to Google Sheet!', 'success');
+
+  } catch (error) {
+    console.error('Error:', error);
+    showMessage('income-form-message', 'Failed to sync with Google Sheet!', 'error');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalBtnText;
+  }
+});
+
+
+    document.getElementById('expense-entry-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  // বাটনটি সিলেক্ট করা এবং লোডিং স্ট্যাটাস দেখানো
+  const submitBtn = document.getElementById('expense-submit-btn');
+  const originalBtnText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Recording Expense...';
+
+  const expenseData = {
+    date: document.getElementById('expense-date').value,
+    amount: parseFloat(document.getElementById('expense-amount').value),
+    category: document.getElementById('expense-category').value,
+    description: document.getElementById('expense-description').value,
+    voucherNo: 'EXP-' + Date.now()
+  };
+
+  try {
+    // ১. Google Sheet-এ ডেটা পাঠানো
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'addData',
+        type: 'expense', // এটি নিশ্চিত করবে যে ডেটা 'expense' শিটে যাবে
+        data: expenseData
+      })
+    });
+
+    // ২. লোকাল ডেটাবেজ আপডেট (ব্রাউজারে সাথে সাথে দেখানোর জন্য)
+    if (!allData.expense) allData.expense = [];
+    allData.expense.push(expenseData);
+    saveToLocalStorage();
+    
+    // ৩. UI রিফ্রেশ এবং সাকসেস মেসেজ
+    updateStats();
+    updateRecentTransactions();
+    e.target.reset();
+    setDefaultDates();
+    showMessage('expense-form-message', 'Expense synced to Google Sheet successfully!', 'success');
+
+  } catch (error) {
+    console.error('Error:', error);
+    showMessage('expense-form-message', 'Failed to sync expense. Check connection!', 'error');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalBtnText;
+  }
+});
+
+    async function generateIncomeReport() {
+    const startDate = document.getElementById('income-report-start').value;
+    const endDate = document.getElementById('income-report-end').value;
+    const tbody = document.getElementById('income-report-table');
+    const totalDiv = document.getElementById('income-report-total');
+    const totalValue = document.getElementById('income-total-value');
+
+    // লোডিং অবস্থা দেখানো
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-blue-500">loading latest data....</td></tr>';
+
+    try {
+        // ১. গুগল শিট থেকে লেটেস্ট ডেটা নিয়ে আসা
+        const response = await fetch(SCRIPT_URL);
+        const freshData = await response.json();
+        
+        // ২. লোকাল ডেটা আপডেট করা (যাতে ড্যাশবোর্ডও আপডেট হয়)
+        allData = freshData;
+        saveToLocalStorage();
+
+        // ৩. ফিল্টার লজিক অ্যাপ্লাই করা
+        const incomes = (allData.income || []).filter(i => {
+            if (startDate && i.date < startDate) return false;
+            if (endDate && i.date > endDate) return false;
+            return true;
+        }).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // ৪. মোট টাকা হিসাব করা
+        const total = incomes.reduce((sum, i) => sum + (parseFloat(i.amount) || 0), 0);
+
+        // ৫. UI আপডেট করা
+        totalDiv.classList.remove('hidden');
+        totalValue.textContent = '$' + total.toFixed(2);
+
+        if (incomes.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-slate-500">No income records found for this range</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = incomes.map(i => `
+           <tr class="border-b border-slate-100">
+<td class="py-3 px-4">
+  ${(() => {
+    let d = new Date(i.date);
+    // টাইমজোন অফসেট ঠিক করার জন্য
+    d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
+    return d.toLocaleDateString('en-CA');
+  })()}
+</td>
+
+
+                <td class="py-3 px-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-sm">${i.category}</span></td>
+                <td class="py-3 px-4">${i.description || '-'}</td>
+                <td class="py-3 px-4 text-right font-semibold text-emerald-600">$${parseFloat(i.amount).toFixed(2)}</td>
+            </tr>
+        `).join('');
+
+    } catch (error) {
+        console.error("Fetch error:", error);
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-red-500">Error: Could not connect to Google Sheet!</td></tr>';
+    }
+}
+
+    async function generateExpenseReport() {
+    const startDate = document.getElementById('expense-report-start').value;
+    const endDate = document.getElementById('expense-report-end').value;
+    const tbody = document.getElementById('expense-report-table');
+    const totalDiv = document.getElementById('expense-report-total');
+    const totalValue = document.getElementById('expense-total-value');
+
+    // লোডিং অবস্থা দেখানো
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-blue-500">loading latest data....</td></tr>';
+
+    try {
+        // ১. গুগল শিট থেকে লেটেস্ট ডেটা নিয়ে আসা
+        const response = await fetch(SCRIPT_URL);
+        const freshData = await response.json();
+        
+        // ২. লোকাল ডেটা আপডেট করা
+        allData = freshData;
+        if (typeof saveToLocalStorage === "function") saveToLocalStorage();
+
+        // ৩. ফিল্টার লজিক অ্যাপ্লাই করা
+        const expenses = (allData.expense || []).filter(e => {
+            // তারিখের তুলনা করার জন্য শীট থেকে আসা তারিখকে সঠিক ফরম্যাটে রাখা
+            if (startDate && e.date < startDate) return false;
+            if (endDate && e.date > endDate) return false;
+            return true;
+        }).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // ৪. মোট টাকা হিসাব করা
+        const total = expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+
+        // ৫. UI আপডেট করা
+        totalDiv.classList.remove('hidden');
+        totalValue.textContent = '$' + total.toFixed(2);
+
+        if (expenses.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-slate-500">No expense records found for this range</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = expenses.map(e => `
+            <tr class="border-b border-slate-100">
+                <td class="py-3 px-4">
+                    ${(() => {
+                        let d = new Date(e.date);
+                        // টাইমজোন অফসেট ঠিক করার জন্য (যাতে ১৪ তারিখ ১৩ না দেখায়)
+                        d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
+                        return d.toLocaleDateString('en-CA');
+                    })()}
+                </td>
+                <td class="py-3 px-4">
+                    <span class="px-2 py-1 bg-rose-100 text-rose-700 rounded-lg text-sm">${e.category}</span>
+                </td>
+                <td class="py-3 px-4">${e.description || '-'}</td>
+                <td class="py-3 px-4 text-right font-semibold text-rose-600">
+                    $${parseFloat(e.amount).toFixed(2)}
+                </td>
+            </tr>
+        `).join('');
+
+    } catch (error) {
+        console.error("Fetch error:", error);
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-red-500">Error: Could not connect to Google Sheet!</td></tr>';
+    }
+}
+
+    function generateIncomeVoucher() {
+      const date = document.getElementById('income-voucher-date').value;
+      if (!date) return;
+
+      const incomes = (allData.income || []).filter(i => i.date === date);
+      const total = incomes.reduce((sum, i) => sum + (parseFloat(i.amount) || 0), 0);
+
+      document.getElementById('voucher-income-date').textContent = date;
+      document.getElementById('voucher-income-no').textContent = 'V-INC-' + date.replace(/-/g, '');
+      document.getElementById('income-voucher-total').textContent = '$' + total.toFixed(2);
+
+      const tbody = document.getElementById('income-voucher-table');
+      if (incomes.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-500">No income records for this date</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = incomes.map((i, idx) => `
+        <tr class="border-b border-slate-100">
+          <td class="py-2">${idx + 1}</td>
+          <td class="py-2">${i.category}</td>
+          <td class="py-2">${i.description || '-'}</td>
+          <td class="py-2 text-right">$${parseFloat(i.amount).toFixed(2)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function generateExpenseVoucher() {
+      const date = document.getElementById('expense-voucher-date').value;
+      if (!date) return;
+
+      const expenses = (allData.expense || []).filter(e => e.date === date);
+      const total = expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+
+      document.getElementById('voucher-expense-date').textContent = date;
+      document.getElementById('voucher-expense-no').textContent = 'V-EXP-' + date.replace(/-/g, '');
+      document.getElementById('expense-voucher-total').textContent = '$' + total.toFixed(2);
+
+      const tbody = document.getElementById('expense-voucher-table');
+      if (expenses.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-500">No expense records for this date</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = expenses.map((e, idx) => `
+        <tr class="border-b border-slate-100">
+          <td class="py-2">${idx + 1}</td>
+          <td class="py-2">${e.category}</td>
+          <td class="py-2">${e.description || '-'}</td>
+          <td class="py-2 text-right">$${parseFloat(e.amount).toFixed(2)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function setDefaultDates() {
+      const today = new Date().toISOString().split('T')[0];
+      ['income-date', 'expense-date', 'income-voucher-date', 'expense-voucher-date'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = today;
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem('eduCenter_user');
+      location.reload();
+    }
+
+    applyConfig();
+    initializeApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cdb78e9a32a5807',t:'MTc3MTA2MDY0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
