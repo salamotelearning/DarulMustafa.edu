@@ -498,39 +498,47 @@
       }
     }
 
-    // আপনার কোডের ৪৪৭ নম্বর লাইনের ফাংশনটি এভাবে পরিবর্তন করুন:
 function checkLoginState() {
-  const user = localStorage.getItem('eduCenter_user');
-  const isLoggedIn = localStorage.getItem('isLoggedIn'); // নতুন চেক
+    const user = localStorage.getItem('eduCenter_user');
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
 
-  if (user && isLoggedIn === 'true') {
-    document.getElementById('user-email').textContent = user;
-    loadDashboard();
-  } else {
-    showLanding();
-  }
+    if (user && isLoggedIn === 'true') {
+        // রিফ্রেশ করলে সরাসরি ড্যাশবোর্ড দেখাবে
+        document.getElementById('landing-page').classList.add('hidden');
+        document.getElementById('login-page').classList.add('hidden');
+        document.getElementById('dashboard-page').classList.remove('hidden');
+        
+        document.getElementById('user-email').textContent = user;
+        loadDashboard(); // ড্যাশবোর্ডের তথ্য গুগল শিট থেকে নিয়ে আসবে
+    } else {
+        // লগইন না থাকলে হোম পেজ দেখাবে
+        showLanding();
+    }
 }
+// লগইন ফর্ম সাবমিট হ্যান্ডলার
+document.getElementById('login-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const errorDiv = document.getElementById('login-error');
 
-    document.getElementById('login-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const errorDiv = document.getElementById('login-error');
-
-      if (password.length < 4) {
+    if (password.length < 4) {
         errorDiv.textContent = 'Password must be at least 4 characters';
         errorDiv.classList.remove('hidden');
         return;
-      }
+    }
 
-        // এখানে পরিবর্তন:
-  localStorage.setItem('eduCenter_user', email);
-  localStorage.setItem('isLoggedIn', 'true'); // রিফ্রেশ সমস্যা সমাধানের জন্য এই লাইনটি যোগ করুন
-  
-  document.getElementById('user-email').textContent = email;
-  errorDiv.classList.add('hidden');
-      showDashboard();
-    });
+    // ব্রাউজারে তথ্য সেভ করা
+    localStorage.setItem('eduCenter_user', email);
+    localStorage.setItem('isLoggedIn', 'true');
+    
+    document.getElementById('user-email').textContent = email;
+    errorDiv.classList.add('hidden');
+    
+    // ড্যাশবোর্ড দেখানো
+    showDashboard();
+    loadDashboard(); // ডেটা ফেচ করার জন্য
+});
 
     async function loadDashboard() {
       document.getElementById('landing-page').classList.add('hidden');
